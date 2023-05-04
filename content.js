@@ -1,55 +1,69 @@
-// // content.js
-// let contentLoaded = false;
 
-// if (!window.contentLoaded) {
-//   // do something
-//   console.log("The window content.js has been loaded~!");
-//   window.contentLoaded = true;
-// }
-// console.log(window.contentLoaded);
+const body = document.querySelector("body");
+const aa = document.createElement('div');
+aa.setAttribute('id', 'box-of-color')
+aa.style.width = "380px";
+aa.style.height = "250px";
+aa.style.backgroundColor = "rgba(150, 50, 150, 0.15)";
+aa.style.color = "rgba(50, 150, 150, 0.75)";
+aa.style.fontSize = "20px";
+aa.style.fontWeight = "700";
+aa.style.position = "fixed";
+aa.style.zIndex = "2147483647";
+aa.style.top = '0';
+aa.style.left = '150px';
+aa.style.padding = '10px 10px 10px 50px';
+aa.style.borderRadius = "10px";
+// aa.style.boxShadow = 
+// aa.style.textShadow = "1px 1px 2px black, 0 0 1px white";
+body.appendChild(aa);
 
-//document.addEventListener('DOMContentLoaded', () => {
 
-//Document.addEventListener('click', (e)=> e.target)
-//collect all of variable :D
-/*
-const elements = document.querySelectorAll('*');
-const variableCollector = [];
 
-for(let i = 0; i < elements.length; i++){
-  console.log(elements[i]); 
-}
-*/
 
-// for(let i = 0; i < elements.length; i++){
-//   let anotherTestUnit = elements[i].getAttribute('data-variable');
-//   if(anotherTestUnit){
-//     variableCollector.push(elements[i]);
-//   }
-// }
- 
 
-// console.log(checkingIfItIsRGBColor("rgb(20, 30, 50)"));
-// console.log(checkingIfItIsRGBColor("rgb(0, 30, 5, 2)"));
 
-/*for(let item in window){
-  variableCollector.push(item);
-}
-for(let item in this){
-  variableCollector.push(item);
-}*/
-// https://developer.mozilla.org/en-US/docs/Web/API/Element/click_event
 document.addEventListener("mouseover", function (event) {
+    
   varColor = getCssColor(event.target)
   let aaa = event.target;
   let ccc = window.getComputedStyle(aaa).getPropertyValue('color');
   // alert(ccc);
-  // let bbb = window.getComputedStyle(aaa).getPropertyValue('background-color');
+  let bbb = window.getComputedStyle(aaa).getPropertyValue('background-color');
   // alert(bbb);
-  console.log(checkingIfItIsRGBAColor(ccc));
-  console.log(checkingIfItIsRGBColor(ccc));
-  console.log(checkingIfItIsHexColor(ccc));
+  // console.log(checkingIfItIsRGBAColor(ccc));
+  // console.log(checkingIfItIsRGBColor(ccc));
+  // console.log(checkingIfItIsHexColor(ccc));
+  whatColorIsIt(ccc);
+  whatColorIsIt2(bbb);
+  aa.innerHTML = "COLOR: " + "<br>" +"rgbA: " + rgbaColor + "<br>" + "HEX: " + hexColor + "<br>" + "Background Color: " + "<br>" + "rgbA: " + rgbaColorBG + "<br>" + "HEX: " + hexColorBG;
+
 })
+
+
+//if it is ok to drag... 
+let ItIsOkToDrag = false;
+let locationOfInput = {x:0, y:0};
+aa.addEventListener('mousedown', (event)=>{
+  ItIsOkToDrag = true;
+  locationOfInput.x = event.clientX - aa.offsetLeft;
+  locationOfInput.y = event.clientY - aa.offsetTop;
+  aa.style.cursor = "grabbing";
+});
+
+aa.addEventListener('mouseup', ()=>{
+  ItIsOkToDrag = false;
+  aa.style.cursor = "grab";
+});
+
+aa.addEventListener('mousemove', (event) => {
+  if(ItIsOkToDrag === true){
+    aa.style.left = event.clientX - locationOfInput.x + "px";
+    aa.style.top = event.clientY - locationOfInput.y + "px";
+    aa.style.cursor = "grabbing";
+  }
+});
+
 
 let varColor = "";
 
@@ -60,9 +74,11 @@ function getCssColor (input){
 
 
 
-let rgbColor;
+
 let rgbaColor;
 let hexColor;
+let rgbaColorBG;
+let hexColorBG;
 
 function whatColorIsIt(input){
   if (checkingIfItIsHexColor(input)){
@@ -71,13 +87,33 @@ function whatColorIsIt(input){
   }
   else if (checkingIfItIsRGBAColor(input)){
     rgbaColor = input;
-   // hexColor
+    hexColor = RgbaColorToHexColor(input);
   }
-  else if (checkingIfItIsRGBColor(input)){
-    rgbColor = input;
-
+  else if (checkingIfItIsRGBColor(input)){   //rgb(155, 200, 250)   ===>  //rgba(155, 200, 250 , 1)
+    // rgbColor = input;
+    rgbaColor = "rgba" + input.substring(3, input.length - 1) + ", 1)";
+    hexColor = RgbaColorToHexColor(rgbaColor);
   }
 }
+
+function whatColorIsIt2(input){
+  if (checkingIfItIsHexColor(input)){
+    hexColorBG = input;
+    rgbaColorBG = hexColorToRgbaColor(input);
+  }
+  else if (checkingIfItIsRGBAColor(input)){
+    rgbaColorBG = input;
+    hexColorBG = RgbaColorToHexColor(input);
+  }
+  else if (checkingIfItIsRGBColor(input)){   //rgb(155, 200, 250)   ===>  //rgba(155, 200, 250 , 1)
+    // rgbColor = input;
+    rgbaColorBG = "rgba" + input.substring(3, input.length - 1) + ", 1)";
+    hexColorBG = RgbaColorToHexColor(rgbaColorBG);
+  }
+}
+
+
+
 
 
 function checkingIfItIsHexColor(input){
@@ -150,15 +186,9 @@ function RgbaColorToHexColor(rgbaCode){//rgba(200, 100, 222, 0.5)
   return hexCode;
 }
 
-console.log(RgbaColorToHexColor("rgba(255, 136, 0, 1)"));
 
 
-const c1 = "#f80"
-const c2 = "#f808"
-const c3 = "#0088ff"
-const c4 = "#0088ff88"
-const c5 = "#9++36"
-const c6 = "john"
+
 
 
 
